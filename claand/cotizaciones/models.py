@@ -11,6 +11,8 @@ class Cotizacion(models.Model):
     descripcion = models.TextField()
     is_pendiente = models.BooleanField(default=True)
     contacto = models.ForeignKey(Contacto)
+    """ Relación de los servicios y productos cotizados """
+    conceptos = models.ManyToManyField(Concepto, through='Cotizado')
     fecha_creacion = models.DateField(editable=True)
     fecha_modificacion = models.DateField()
 
@@ -98,3 +100,16 @@ class Concepto(models.Model):
     def __str__(self):
         return str(self.tipo) + ": " + self.nombre + ": $" + \
         str(self.costo)
+
+class Cotizado(models.Model):
+    cotizacion = models.ForeignKey(Cotizacion)
+    concepto = models.ForeignKey(Concepto)
+    fecha = models.DateField()
+
+    class Meta:
+        verbose_name_plural = 'Cotizados'
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.fecha = datetime.now()
+        return super(Cotizado, self).save(*args, **kwargs)
