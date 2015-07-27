@@ -76,6 +76,8 @@ class Pago(models.Model):
         return str(self.id) + ": " + self.venta.cotizacion.descripcion + ": $" + \
         str(self.monto)
 
+""" Los objetos tipo concepto, componen las cotizaciones y ventas,
+    se dividen en servicios y productos """
 class Concepto(models.Model):
     is_active = models.BooleanField(default=True)
     nombre = models.CharField(max_length=30)
