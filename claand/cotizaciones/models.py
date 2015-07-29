@@ -5,6 +5,29 @@ from django.core.validators import MinValueValidator
 
 from contactos.models import Contacto
 
+""" Los objetos tipo concepto, componen las cotizaciones y ventas,
+    se dividen en servicios y productos """
+class Concepto(models.Model):
+    is_active = models.BooleanField(default=True)
+    nombre = models.CharField(max_length=30)
+    costo = models.FloatField(default=0, validators=[MinValueValidator(0)])
+    tipo = models.CharField(max_length=10)
+    fecha_creacion = models.DateField(editable=False)
+    fecha_modificacion = models.DateField()
+
+    def save(self, *args, **kwargs):
+        """ Override de save para que sólo haya una fecha de creación,
+        y si dicha tupla se modifica, se guarde la fecha de modificación.
+        """
+        if not self.id:
+            self.fecha_creacion = datetime.today()
+        self.fecha_modificacion = datetime.today()
+        return super(Venta, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.tipo) + ": " + self.nombre + ": $" + \
+        str(self.costo)
+
 class Cotizacion(models.Model):
     is_active = models.BooleanField(default=True)
     monto = models.FloatField(default=0, validators=[MinValueValidator(0)])
@@ -77,29 +100,6 @@ class Pago(models.Model):
     def __str__(self):
         return str(self.id) + ": " + self.venta.cotizacion.descripcion + ": $" + \
         str(self.monto)
-
-""" Los objetos tipo concepto, componen las cotizaciones y ventas,
-    se dividen en servicios y productos """
-class Concepto(models.Model):
-    is_active = models.BooleanField(default=True)
-    nombre = models.CharField(max_length=30)
-    costo = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    tipo = models.CharField(max_length=10)
-    fecha_creacion = models.DateField(editable=False)
-    fecha_modificacion = models.DateField()
-
-    def save(self, *args, **kwargs):
-        """ Override de save para que sólo haya una fecha de creación,
-        y si dicha tupla se modifica, se guarde la fecha de modificación.
-        """
-        if not self.id:
-            self.fecha_creacion = datetime.today()
-        self.fecha_modificacion = datetime.today()
-        return super(Venta, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return str(self.tipo) + ": " + self.nombre + ": $" + \
-        str(self.costo)
 
 class Cotizado(models.Model):
     cotizacion = models.ForeignKey(Cotizacion)
