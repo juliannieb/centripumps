@@ -5,7 +5,7 @@
 
     <div class="container">
         <div class="page-header">
-            <h1>Todas las empresas</h1>
+            <h1>Todas las clientes</h1>
         </div>
     </div>
 
@@ -17,12 +17,12 @@
                     <th class="table-head"><a href="#">Nombre</a></th>
                 </tr>
             </thead>
-            <tbody id="tabla_empresas">
-                {% for empresa in empresas_list %}
-                    {% if empresa.is_active %}
+            <tbody id="tabla_clientes">
+                {% for cliente in clientes_list %}
+                    {% if cliente.is_active %}
                         <tr class="link_fila">
-                            <td><a href="{% url 'empresas:empresa' empresa.slug %}">{{ empresa.rfc }}</a></td>
-                            <td>{{ empresa.nombre }}</td>
+                            <td><a href="{% url 'empresas:cliente' cliente.slug %}">{{ cliente.rfc }}</a></td>
+                            <td>{{ cliente.nombre }}</td>
                         </tr>
                     {% endif %}
                 {% endfor %}
@@ -31,11 +31,11 @@
     </div>
 
     <script type="text/javascript">
-        $('#txt_search_empresas').keyup(function(){
+        $('#txt_search_clientes').keyup(function(){
             var texto;
             texto = $(this).val();
-            $.get("{% url 'empresas:search_empresas' %}", {'texto' : texto}, function(data) {
-                $('#tabla_empresas').html(data);
+            $.get("{% url 'empresas:search_clientes' %}", {'texto' : texto}, function(data) {
+                $('#tabla_clientes').html(data);
             });
         });
     </script>

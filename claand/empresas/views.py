@@ -75,12 +75,15 @@ def obtener_llamadas_list(contactos_list):
 def consultar_empresas(request):
     """ Vista para mostrar todas las empresas.
     """
-    empresas_list = Cliente.objects.all()
+    clientes_list = Cliente.objects.all()
     es_vendedor = no_es_vendedor(request.user)
 
     context = {}
-    context['empresas_list'] = empresas_list
+    context['clientes_list'] = clientes_list
     context['no_es_vendedor'] = es_vendedor
+
+    print("Holaaaaa")
+    print(clientes_list)
     return render(request, 'empresas/empresas.html', context)
 
 
@@ -263,11 +266,11 @@ def get_municipio(request):
         return HttpResponseRedirect(reverse('principal:index'))
 
 
-def search_empresas(request):
+def search_clientes(request):
     """Función para atender la petición GET AJAX para filtrar las empresas en la Vista
     empresas
     """
     if request.is_ajax() and request.method == 'GET':
         texto = request.GET['texto']
-        empresas_list = Cliente.objects.filter(nombre__icontains=texto)
-    return render_to_response('empresas/search_empresas.html', {'empresas_list': empresas_list})
+        clientes_list = Cliente.objects.filter(nombre__icontains=texto)
+    return render_to_response('empresas/search_clientes.html', {'clientes_list': clientes_list})

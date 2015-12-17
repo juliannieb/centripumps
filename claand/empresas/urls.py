@@ -6,7 +6,7 @@ urlpatterns = patterns('',
         url(r'^get_municipio/$', views.get_municipio, name='get_municipio'),
         url(r'^consultar/$', views.consultar_empresas, name='consultar_empresas'),
         url(r'^consultar/(?P<cliente_nombre_slug>[\w\-]+)/$', views.cliente, name='cliente'),
-        url(r'^search_empresas/$', views.search_empresas, name="search_empresas"),
+        url(r'^search_clientes/$', views.search_clientes, name="search_clientes"),
         )
 
 
