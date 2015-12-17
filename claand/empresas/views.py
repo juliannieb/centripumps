@@ -81,9 +81,7 @@ def consultar_empresas(request):
     context = {}
     context['clientes_list'] = clientes_list
     context['no_es_vendedor'] = es_vendedor
-
-    print("Holaaaaa")
-    print(clientes_list)
+    
     return render(request, 'empresas/empresas.html', context)
 
 
