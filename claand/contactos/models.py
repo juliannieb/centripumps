@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from oauth2client.django_orm import FlowField
 from oauth2client.django_orm import CredentialsField
 
-from empresas.models import Empresa
+from empresas.models import Cliente
 from principal.models import Vendedor
 
     
@@ -18,14 +18,14 @@ class CredentialsModel(models.Model):
 class CredentialsAdmin(admin.ModelAdmin):
     pass
 
-class Contacto(models.Model):
+class Pozo(models.Model):
     is_active = models.BooleanField(default=True)
     is_cliente = models.BooleanField(default=False)
     nombre = models.CharField(max_length=35)
     apellido = models.CharField(max_length=35)
     correo_electronico = models.EmailField(unique=True)
     calificacion = models.ForeignKey('Calificacion', null=True)
-    empresa = models.ManyToManyField(Empresa, through='Pertenece')
+    empresa = models.ManyToManyField(Cliente, through='Pertenece')
     vendedor = models.ManyToManyField(Vendedor, through='Atiende')
     slug = models.SlugField(unique=True, null=True)
 
@@ -40,21 +40,21 @@ class Contacto(models.Model):
             self.slug = slug
             while slug_exists:
                 try:
-                    slug_exits = Contacto.objects.get(slug=slug)
+                    slug_exits = Pozo.objects.get(slug=slug)
                     if slug_exits:
                         slug = self.slug + '_' + str(counter)
                         counter += 1
-                except Contacto.DoesNotExist:
+                except Pozo.DoesNotExist:
                     self.slug = slug
                     break
-        super(Contacto, self).save(*args, **kwargs)
+        super(Pozo, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.nombre + " " + self.apellido
 
 class Pertenece(models.Model):
-    contacto = models.ForeignKey(Contacto)
-    empresa = models.ForeignKey(Empresa)
+    contacto = models.ForeignKey(Pozo)
+    empresa = models.ForeignKey(Cliente)
     fecha = models.DateField()
     area = models.ForeignKey('Area')
 
@@ -77,7 +77,7 @@ class Area(models.Model):
         verbose_name_plural = 'Áreas'
 
 class Atiende(models.Model):
-    contacto = models.ForeignKey(Contacto)
+    contacto = models.ForeignKey(Pozo)
     vendedor = models.ForeignKey(Vendedor)
     fecha = models.DateField()
 
@@ -103,7 +103,7 @@ class Nota(models.Model):
     is_active = models.BooleanField(default=True)
     clasificacion = models.IntegerField(default=1)
     descripcion = models.TextField()
-    contacto = models.ForeignKey(Contacto)
+    contacto = models.ForeignKey(Pozo)
 
     def __str__(self):
         return self.descripcion
@@ -113,7 +113,7 @@ class Recordatorio(models.Model):
     descripcion = models.TextField(max_length=1000)
     fecha = models.DateTimeField()
     urgencia = models.IntegerField(default=1)
-    contacto = models.ForeignKey(Contacto)
+    contacto = models.ForeignKey(Pozo)
 
     def __str__(self):
         return self.descripcion[:30]
@@ -122,7 +122,7 @@ class Llamada(models.Model):
     is_active = models.BooleanField(default=True)
     descripcion = models.TextField(max_length=1000)
     fecha = models.DateField()
-    contacto = models.ForeignKey(Contacto)
+    contacto = models.ForeignKey(Pozo)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -139,8 +139,8 @@ class TipoNumeroTelefonico(models.Model):
         return self.nombre
 
 class NumeroTelefonico(models.Model):
-    contacto = models.ForeignKey(Contacto, null=True, blank=True)
-    empresa = models.ForeignKey(Empresa, null=True, blank=True)
+    contacto = models.ForeignKey(Pozo, null=True, blank=True)
+    empresa = models.ForeignKey(Cliente, null=True, blank=True)
     vendedor = models.ForeignKey(Vendedor, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     numero = models.BigIntegerField(null=True)

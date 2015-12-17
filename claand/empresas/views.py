@@ -8,12 +8,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 
-from empresas.forms import EmpresaForm, DireccionForm, NumeroTelefonicoForm, RedSocialForm
+from empresas.forms import ClienteForm, DireccionForm, NumeroTelefonicoForm, RedSocialForm
 
 from principal.models import Vendedor
-from empresas.models import Empresa, Direccion, EmpresaTieneDireccion, Municipio
+from empresas.models import Cliente, Direccion, ClienteTieneDireccion, Municipio
 from cotizaciones.models import Cotizacion, Venta
-from contactos.models import Contacto
+from contactos.models import Pozo
 
 def no_es_vendedor(user):
     """Funcion para el decorador user_passes_test
@@ -21,7 +21,7 @@ def no_es_vendedor(user):
     return not user.groups.filter(name='vendedor').exists()
 
 def obtener_contactos_list(vendedor):
-    todos_los_contactos = Contacto.objects.all()
+    todos_los_contactos = Pozo.objects.all()
     contactos_list = []
     for contacto in todos_los_contactos:
         atiende_set = contacto.atiende_set.all()
@@ -75,7 +75,7 @@ def obtener_llamadas_list(contactos_list):
 def consultar_empresas(request):
     """ Vista para mostrar todas las empresas.
     """
-    empresas_list = Empresa.objects.all()
+    empresas_list = Cliente.objects.all()
     es_vendedor = no_es_vendedor(request.user)
 
     context = {}
@@ -85,22 +85,22 @@ def consultar_empresas(request):
 
 
 @login_required
-def empresa(request, empresa_nombre_slug):
-    """ Vista para consultar la información de una empresa en particular.
+def cliente(request, cliente_nombre_slug):
+    """ Vista para consultar la información de una cliente en particular.
     En esta, se realiza un gráfico de ventas y cotizaciones vs tiempo, utilizando 
     el app de nvd3.
     """
     context = {}
-    empresa = Empresa.objects.get(slug=empresa_nombre_slug)
+    cliente = Cliente.objects.get(slug=cliente_nombre_slug)
     es_vendedor = no_es_vendedor(request.user)
     # obtener info general
-    empresa_tiene_direccion = EmpresaTieneDireccion.objects.filter(empresa=empresa)
-    numeros_list = empresa.numerotelefonico_set.all()
-    redes_list = empresa.redsocial_set.all()
+    empresa_tiene_direccion = ClienteTieneDireccion.objects.filter(cliente=cliente)
+    numeros_list = cliente.numerotelefonico_set.all()
+    redes_list = cliente.redsocial_set.all()
     
     current_user = request.user
     if es_vendedor: # si no es vendedor
-        contactos_list = Contacto.objects.filter(empresa=empresa)
+        contactos_list = Pozo.objects.filter(cliente=cliente)
         cotizaciones_list = Cotizacion.objects.filter(contacto=contactos_list)
         ventas_list = Venta.objects.filter(cotizacion=cotizaciones_list)
     else:
@@ -109,7 +109,7 @@ def empresa(request, empresa_nombre_slug):
         current_vendedor = Vendedor.objects.get(user=current_user)
         contactos_list = obtener_contactos_list(current_vendedor)
         contactos_list = obtener_contactos_ids(contactos_list)
-        contactos_list = Contacto.objects.filter(pk__in=contactos_list, empresa=empresa)
+        contactos_list = Pozo.objects.filter(pk__in=contactos_list, cliente=cliente)
         cotizaciones_list = obtener_cotizaciones_list(contactos_list)
         ventas_list = obtener_ventas_list(cotizaciones_list)
     
@@ -180,7 +180,7 @@ def empresa(request, empresa_nombre_slug):
         }
     }
 
-    context['empresa'] = empresa
+    context['cliente'] = cliente
     context['empresa_tiene_direccion'] = empresa_tiene_direccion
     context['numeros_list'] = numeros_list
     context['redes_list'] = redes_list
@@ -189,14 +189,14 @@ def empresa(request, empresa_nombre_slug):
     context['ventas_list'] = ventas_list
     context['no_es_vendedor'] = es_vendedor
 
-    return render(request, 'empresas/empresa.html', context)
+    return render(request, 'empresas/cliente.html', context)
 
 @login_required
 def registrar_empresa(request):
-    """ Vista para registrar una empresa.
+    """ Vista para registrar una cliente.
     """
     if request.method == 'POST':
-        form = EmpresaForm(request.POST)
+        form = ClienteForm(request.POST)
         formDireccion = DireccionForm(request.POST)
         formNumeroTelefonico = NumeroTelefonicoForm(request.POST)
         if not formNumeroTelefonico.has_changed():
@@ -223,23 +223,23 @@ def registrar_empresa(request):
                 formRedSocial = RedSocialForm()
                 forms['formRedSocial'] = formRedSocial
             if es_valido:
-                empresa = form.instance
-                empresa = form.save(commit=True)
+                cliente = form.instance
+                cliente = form.save(commit=True)
                 direccion = formDireccion.save(commit=True)
 
-                EmpresaTieneDireccion(empresa=empresa, direccion=direccion).save()
+                ClienteTieneDireccion(cliente=cliente, direccion=direccion).save()
 
                 if formNumeroTelefonico.has_changed() and formNumeroTelefonico.is_valid():
                     numero_telefonico = formNumeroTelefonico.instance
-                    numero_telefonico.empresa = empresa
+                    numero_telefonico.cliente = cliente
                     numero_telefonico.save()
                 if formRedSocial.has_changed() and formRedSocial.is_valid():
                     red_social = formRedSocial.instance
-                    red_social.empresa = empresa
+                    red_social.cliente = cliente
                     red_social.save()
                 return render(request, 'principal/exito.html')
     else:
-        form = EmpresaForm()
+        form = ClienteForm()
         formDireccion = DireccionForm()
         formNumeroTelefonico = NumeroTelefonicoForm()
         formRedSocial = RedSocialForm()
@@ -269,5 +269,5 @@ def search_empresas(request):
     """
     if request.is_ajax() and request.method == 'GET':
         texto = request.GET['texto']
-        empresas_list = Empresa.objects.filter(nombre__icontains=texto)
+        empresas_list = Cliente.objects.filter(nombre__icontains=texto)
     return render_to_response('empresas/search_empresas.html', {'empresas_list': empresas_list})

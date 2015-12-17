@@ -1,9 +1,9 @@
 from django import forms
-from empresas.models import Empresa, EmpresaTieneDireccion, TipoRedSocial
+from empresas.models import Cliente, ClienteTieneDireccion, TipoRedSocial
 from empresas.models import RedSocial, Estado, Municipio, Direccion
 from contactos.models import NumeroTelefonico, TipoNumeroTelefonico
 
-class EmpresaForm(forms.ModelForm):
+class ClienteForm(forms.ModelForm):
 	nombre = forms.CharField(max_length=30, help_text='Nombre: ', required=True, \
 		widget=forms.TextInput(attrs={'class': 'form-control'}))
 	rfc = forms.RegexField(max_length=13, help_text='RFC: ', regex=r'[a-zA-Z0-9]{13}', \
@@ -11,7 +11,7 @@ class EmpresaForm(forms.ModelForm):
 		widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 	class Meta:
-		model = Empresa
+		model = Cliente
 		fields = ('nombre', 'rfc',)
 
 	def clean(self):

@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from contactos.models import *
 
-admin.site.register(Contacto)
+admin.site.register(Pozo)
 admin.site.register(Area)
 admin.site.register(Calificacion)
 admin.site.register(Nota)

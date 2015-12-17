@@ -1,12 +1,12 @@
 from django.contrib import admin
 
-from empresas.models import Empresa, RedSocial, Estado, Municipio, Direccion
-from empresas.models import TipoRedSocial, EmpresaTieneDireccion
+from empresas.models import Cliente, RedSocial, Estado, Municipio, Direccion
+from empresas.models import TipoRedSocial, ClienteTieneDireccion
 
-admin.site.register(Empresa)
+admin.site.register(Cliente)
 admin.site.register(TipoRedSocial)
 admin.site.register(RedSocial)
 admin.site.register(Estado)
 admin.site.register(Municipio)
 admin.site.register(Direccion)
-admin.site.register(EmpresaTieneDireccion)
+admin.site.register(ClienteTieneDireccion)

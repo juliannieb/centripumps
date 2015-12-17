@@ -8,7 +8,7 @@ from django.template import RequestContext
 from django.contrib.auth.models import User, Group
 
 from principal.models import Vendedor
-from contactos.models import Contacto, Llamada, Atiende
+from contactos.models import Pozo, Llamada, Atiende
 from cotizaciones.models import Cotizacion, Venta
 
 from principal.forms import VendedorForm, SeleccionarVendedorForm
@@ -19,7 +19,7 @@ def no_es_vendedor(user):
     return not user.groups.filter(name='vendedor').exists()
 
 def obtener_contactos_list(vendedor):
-    todos_los_contactos = Contacto.objects.all()
+    todos_los_contactos = Pozo.objects.all()
     contactos_list = []
     for contacto in todos_los_contactos:
         atiende_set = contacto.atiende_set.all()
@@ -269,12 +269,12 @@ def eliminar_vendedor(request, id_vendedor):
     """ Vista para registrar un nuevo vendedor en el sistema """
     vendedor = Vendedor.objects.get(pk=id_vendedor)
     if request.method == 'POST':
-        formAsignarTodosLosContactos = SeleccionarVendedorForm(request.POST)
+        formAsignarTodosLosPozos = SeleccionarVendedorForm(request.POST)
         es_vendedor = no_es_vendedor(request.user)
-        forms = {'formAsignarTodosLosContactos':formAsignarTodosLosContactos, 'vendedor':vendedor, \
+        forms = {'formAsignarTodosLosPozos':formAsignarTodosLosPozos, 'vendedor':vendedor, \
         'no_es_vendedor':es_vendedor}
-        if formAsignarTodosLosContactos.is_valid():
-            data = formAsignarTodosLosContactos.cleaned_data
+        if formAsignarTodosLosPozos.is_valid():
+            data = formAsignarTodosLosPozos.cleaned_data
             nuevoVendedor = data['vendedor']
             contactos_list = obtener_contactos_list(vendedor)
             for contacto in contactos_list:
@@ -286,9 +286,9 @@ def eliminar_vendedor(request, id_vendedor):
             user.save()
             return render(request, 'principal/exito.html', {'no_es_vendedor':es_vendedor})
     else:
-        formAsignarTodosLosContactos = SeleccionarVendedorForm()
+        formAsignarTodosLosPozos = SeleccionarVendedorForm()
         es_vendedor = no_es_vendedor(request.user)
-        forms = {'formAsignarTodosLosContactos':formAsignarTodosLosContactos, 'vendedor':vendedor, \
+        forms = {'formAsignarTodosLosPozos':formAsignarTodosLosPozos, 'vendedor':vendedor, \
         'no_es_vendedor':es_vendedor, }
 
     return render(request, 'principal/eliminar_vendedor.html', forms)
@@ -298,7 +298,7 @@ def eliminar_vendedor(request, id_vendedor):
 @user_passes_test(no_es_vendedor)
 def consultar_global(request):
     es_vendedor = no_es_vendedor(request.user)
-    contactos_list = Contacto.objects.all()
+    contactos_list = Pozo.objects.all()
     cotizaciones_list = Cotizacion.objects.all()
     ventas_list = Venta.objects.all()
     context={}

@@ -2,10 +2,10 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from cotizaciones.models import Cotizacion, Venta, Pago
-from contactos.models import Contacto
+from contactos.models import Pozo
 
 class CotizacionForm(forms.ModelForm):
-	contacto = forms.ModelChoiceField(queryset=Contacto.objects.all(), help_text='Contacto: ', \
+	contacto = forms.ModelChoiceField(queryset=Pozo.objects.all(), help_text='Pozo: ', \
 		required=True, widget=forms.Select(attrs={'class': 'form-control'}))
 	monto = forms.FloatField(help_text='Monto: ', \
 		required=True, widget=forms.NumberInput(attrs={'class': 'form-control'}))

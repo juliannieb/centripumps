@@ -2,12 +2,12 @@ from datetime import datetime
 from django.db import models
 from django.template.defaultfilters import slugify
 
-class Empresa(models.Model):
+class Cliente(models.Model):
     is_active = models.BooleanField(default=True)
     nombre = models.CharField(max_length=30)
     rfc = models.CharField(max_length=13, unique=True)
     slug = models.SlugField(unique=True, null=True)
-    direcciones = models.ManyToManyField('Direccion', through='EmpresaTieneDireccion')
+    direcciones = models.ManyToManyField('Direccion', through='ClienteTieneDireccion')
 
     def save(self, *args, **kwargs):
         """ Override de save para que el RFC siempre se guarde
@@ -20,21 +20,21 @@ class Empresa(models.Model):
             self.slug = slug
             while slug_exists:
                 try:
-                    slug_exits = Empresa.objects.get(slug=slug)
+                    slug_exits = Cliente.objects.get(slug=slug)
                     if slug_exits:
                         slug = self.slug + '_' + str(counter)
                         counter += 1
-                except Empresa.DoesNotExist:
+                except Cliente.DoesNotExist:
                     self.slug = slug
                     break
-        super(Empresa, self).save(*args, **kwargs)
+        super(Cliente, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.nombre
 
-class EmpresaTieneDireccion(models.Model):
+class ClienteTieneDireccion(models.Model):
     fecha = models.DateField()
-    empresa = models.ForeignKey(Empresa)
+    empresa = models.ForeignKey(Cliente)
     direccion = models.ForeignKey('Direccion')
 
     def save(self, *args, **kwargs):
@@ -43,10 +43,10 @@ class EmpresaTieneDireccion(models.Model):
         """
         if not self.id:
             self.fecha = datetime.now()
-        return super(EmpresaTieneDireccion, self).save(*args, **kwargs)
+        return super(ClienteTieneDireccion, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name_plural = 'Empresa tiene direcciones'
+        verbose_name_plural = 'Cliente tiene direcciones'
 
 class TipoRedSocial(models.Model):
     nombre = models.CharField(max_length=30)
@@ -60,7 +60,7 @@ class TipoRedSocial(models.Model):
 class RedSocial(models.Model):
     is_active = models.BooleanField(default=True)
     link = models.URLField(null=True)
-    empresa = models.ForeignKey(Empresa)
+    empresa = models.ForeignKey(Cliente)
     tipo_red_social = models.ForeignKey(TipoRedSocial, null=True)
 
     def __str__(self):

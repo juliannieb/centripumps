@@ -16,13 +16,13 @@ from oauth2client.client import flow_from_clientsecrets
 
 from claand import settings
 from contactos.models import CredentialsModel
-from contactos.models import Contacto, Pertenece, NumeroTelefonico, Calificacion, Atiende, Recordatorio, Nota, Llamada
+from contactos.models import Pozo, Pertenece, NumeroTelefonico, Calificacion, Atiende, Recordatorio, Nota, Llamada
 from principal.models import Vendedor
 from cotizaciones.models import Cotizacion, Venta
-from empresas.models import Empresa
+from empresas.models import Cliente
 from contactos.models import Llamada
 
-from contactos.forms import ContactoForm, LlamadaForm, NotaForm, RecordatorioForm, AtiendeForm, EditarContactoForm
+from contactos.forms import PozoForm, LlamadaForm, NotaForm, RecordatorioForm, AtiendeForm, EditarPozoForm
 from empresas.forms import NumeroTelefonicoForm, RedSocialForm
 
 def no_es_vendedor(user):
@@ -31,7 +31,7 @@ def no_es_vendedor(user):
     return not user.groups.filter(name='vendedor').exists()
 
 def obtener_contactos_list(vendedor):
-    todos_los_contactos = Contacto.objects.all()
+    todos_los_contactos = Pozo.objects.all()
     contactos_list = []
     for contacto in todos_los_contactos:
         atiende_set = contacto.atiende_set.all()
@@ -105,7 +105,7 @@ def consultar_contactos(request):
     current_user = request.user
     es_vendedor = no_es_vendedor(request.user)
     if no_es_vendedor(current_user):
-        contactos_list = Contacto.objects.all()
+        contactos_list = Pozo.objects.all()
     else:
         current_vendedor = Vendedor.objects.get(user=current_user)
         contactos_list = obtener_contactos_list(current_vendedor)
@@ -118,7 +118,7 @@ def consultar_contactos(request):
 def contacto(request, contacto_nombre_slug):
     """ Vista para mostrar todo el detalle de un contacto en particular.
     """
-    contacto = Contacto.objects.get(slug=contacto_nombre_slug)
+    contacto = Pozo.objects.get(slug=contacto_nombre_slug)
     pertenece = Pertenece.objects.filter(contacto=contacto)
     pertenece = pertenece[len(pertenece) - 1]
     numeros_list = contacto.numerotelefonico_set.all()
@@ -158,20 +158,20 @@ def registrar_contacto(request):
     si la solicitud es POST o GET.
     """
     if request.method == 'POST':
-        formContacto = ContactoForm(request.POST)
+        formPozo = PozoForm(request.POST)
         formNumeroTelefonico = NumeroTelefonicoForm(request.POST)
         if not formNumeroTelefonico.has_changed():
             formNumeroTelefonico = NumeroTelefonicoForm()
         es_vendedor = no_es_vendedor(request.user)
-        forms = {'formContacto':formContacto, 'formNumeroTelefonico':formNumeroTelefonico, \
+        forms = {'formPozo':formPozo, 'formNumeroTelefonico':formNumeroTelefonico, \
         'no_es_vendedor':es_vendedor}
-        if formContacto.is_valid():
+        if formPozo.is_valid():
             es_valido = True
             if formNumeroTelefonico.has_changed():
                 if not formNumeroTelefonico.is_valid:
                     es_valido = False
             if es_valido:
-                data = formContacto.cleaned_data
+                data = formPozo.cleaned_data
                 nombre = data['nombre']
                 apellido = data['apellido']
                 correo_electronico = data['correo_electronico']
@@ -179,7 +179,7 @@ def registrar_contacto(request):
                 area = data['area']
                 is_cliente = data['is_cliente']
                 calificacion = data['calificacion']
-                contacto = Contacto(nombre=nombre, apellido=apellido, correo_electronico=correo_electronico, \
+                contacto = Pozo(nombre=nombre, apellido=apellido, correo_electronico=correo_electronico, \
                     calificacion=calificacion, is_cliente=is_cliente)
                 contacto.save()
                 
@@ -195,10 +195,10 @@ def registrar_contacto(request):
                     numero_telefonico.save()
                 return render(request, 'principal/exito.html', {'no_es_vendedor':es_vendedor})
     else:
-        formContacto = ContactoForm()
+        formPozo = PozoForm()
         formNumeroTelefonico = NumeroTelefonicoForm()
         es_vendedor = no_es_vendedor(request.user)
-        forms = {'formContacto':formContacto, 'formNumeroTelefonico':formNumeroTelefonico, \
+        forms = {'formPozo':formPozo, 'formNumeroTelefonico':formNumeroTelefonico, \
         'no_es_vendedor':es_vendedor}
     return render(request, 'contactos/registrar_contacto.html', forms)
 
@@ -212,7 +212,7 @@ def registrar_llamada(request):
     contactos_list = obtener_contactos_ids(contactos_list)
     if request.method == 'POST':
         formLlamada = LlamadaForm(request.POST)
-        formLlamada.fields["contacto"].queryset = Contacto.objects.filter(pk__in=contactos_list)
+        formLlamada.fields["contacto"].queryset = Pozo.objects.filter(pk__in=contactos_list)
         es_vendedor = no_es_vendedor(request.user)
         forms = {'formLlamada':formLlamada, 'no_es_vendedor':es_vendedor}
         if formLlamada.is_valid():
@@ -223,7 +223,7 @@ def registrar_llamada(request):
             return render(request, 'principal/exito.html', {'no_es_vendedor':es_vendedor})
     else:
         formLlamada = LlamadaForm()
-        formLlamada.fields["contacto"].queryset = Contacto.objects.filter(pk__in=contactos_list)
+        formLlamada.fields["contacto"].queryset = Pozo.objects.filter(pk__in=contactos_list)
         es_vendedor = no_es_vendedor(request.user)
         forms = {'formLlamada':formLlamada, 'no_es_vendedor':es_vendedor}
     return render(request, 'contactos/registrar_llamada.html', forms)
@@ -350,7 +350,7 @@ def registrar_recordatorio(request):
 def asignar_vendedor(request, contacto_id):
     """ En esta vista se asigna la atención de un vendedor a un contacto
     """
-    contacto = Contacto.objects.get(id=contacto_id)
+    contacto = Pozo.objects.get(id=contacto_id)
     if request.method == 'POST':
         formAtiende = AtiendeForm(request.POST)
         es_vendedor = no_es_vendedor(request.user)
@@ -369,7 +369,7 @@ def asignar_vendedor(request, contacto_id):
 
 @login_required
 def eliminar_contacto(request, id_contacto):
-    contacto = Contacto.objects.get(pk=id_contacto)
+    contacto = Pozo.objects.get(pk=id_contacto)
     contacto.is_active = False
     contacto.save()
     cotizaciones_list = Cotizacion.objects.filter(contacto=contacto)
@@ -417,22 +417,22 @@ def editar_contacto(request, id_contacto):
     """ En esta vista se presenta la interfaz para editar la información básica
     de un contacto.
     """
-    contacto = Contacto.objects.get(pk=id_contacto)
+    contacto = Pozo.objects.get(pk=id_contacto)
     if request.method == 'POST':
-        formContacto = ContactoForm(request.POST)
+        formPozo = PozoForm(request.POST)
         formNumeroTelefonico = NumeroTelefonicoForm(request.POST)
         if not formNumeroTelefonico.has_changed():
             formNumeroTelefonico = NumeroTelefonicoForm()
         es_vendedor = no_es_vendedor(request.user)
-        forms = {'contacto': contacto, 'formContacto':formContacto, 'formNumeroTelefonico':formNumeroTelefonico, \
+        forms = {'contacto': contacto, 'formPozo':formPozo, 'formNumeroTelefonico':formNumeroTelefonico, \
         'no_es_vendedor':es_vendedor}
         es_valido = True
-        if formContacto.is_valid():
+        if formPozo.is_valid():
             if formNumeroTelefonico.has_changed():
                 if not formNumeroTelefonico.is_valid:
                     es_valido = False
             if es_valido:
-                data = formContacto.cleaned_data
+                data = formPozo.cleaned_data
                 nombre = data['nombre']
                 apellido = data['apellido']
                 correo_electronico = data['correo_electronico']
@@ -462,32 +462,32 @@ def editar_contacto(request, id_contacto):
                     numeros_tels.save()
                 return render(request, 'principal/exito.html', {'no_es_vendedor':es_vendedor})
     else:
-        contacto = Contacto.objects.get(id=id_contacto)
-        data_formContacto = {}
-        data_formContacto['nombre'] = contacto.nombre
-        data_formContacto['apellido'] = contacto.apellido
+        contacto = Pozo.objects.get(id=id_contacto)
+        data_formPozo = {}
+        data_formPozo['nombre'] = contacto.nombre
+        data_formPozo['apellido'] = contacto.apellido
         pertenece = Pertenece.objects.filter(contacto=contacto)
         pertenece = pertenece[len(pertenece) - 1]
         empresa = pertenece.empresa
-        data_formContacto['empresa'] = empresa.pk
-        data_formContacto['area'] = pertenece.area.pk
-        data_formContacto['correo_electronico'] = contacto.correo_electronico
-        data_formContacto['calificacion'] = contacto.calificacion
-        data_formContacto['is_cliente'] = contacto.is_cliente
+        data_formPozo['empresa'] = empresa.pk
+        data_formPozo['area'] = pertenece.area.pk
+        data_formPozo['correo_electronico'] = contacto.correo_electronico
+        data_formPozo['calificacion'] = contacto.calificacion
+        data_formPozo['is_cliente'] = contacto.is_cliente
 
         numeros_tels = NumeroTelefonico.objects.get(contacto=contacto)
         data_formTelefono = {}
         data_formTelefono['numero'] = numeros_tels.numero
         data_formTelefono['tipo_numero'] = numeros_tels.tipo_numero
 
-        formContacto = ContactoForm(data_formContacto)
+        formPozo = PozoForm(data_formPozo)
         formNumeroTelefonico = NumeroTelefonicoForm(data_formTelefono)
 
-        #formContacto['correo_electronico'] = contacto.correo_electronico
-        #formContacto['calificacion'] = contacto.calificacion.pk
+        #formPozo['correo_electronico'] = contacto.correo_electronico
+        #formPozo['calificacion'] = contacto.calificacion.pk
         
         es_vendedor = no_es_vendedor(request.user)
-        forms = {'contacto': contacto,'formContacto':formContacto, 'formNumeroTelefonico':formNumeroTelefonico, \
+        forms = {'contacto': contacto,'formPozo':formPozo, 'formNumeroTelefonico':formNumeroTelefonico, \
         'no_es_vendedor':es_vendedor}
     return render(request, 'contactos/editar_contacto.html', forms)
 

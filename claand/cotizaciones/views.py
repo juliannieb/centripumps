@@ -8,7 +8,7 @@ from cotizaciones.models import Cotizacion, Venta, Pago
 from principal.models import Vendedor
 from contactos.models import Pertenece
 
-from cotizaciones.forms import Contacto, CotizacionForm, VentaForm, PagoForm
+from cotizaciones.forms import Pozo, CotizacionForm, VentaForm, PagoForm
 
 def no_es_vendedor(user):
     """ Funcion para el decorador user_passes_test
@@ -16,7 +16,7 @@ def no_es_vendedor(user):
     return not user.groups.filter(name='vendedor').exists()
 
 def obtener_contactos_list(vendedor):
-    todos_los_contactos = Contacto.objects.all()
+    todos_los_contactos = Pozo.objects.all()
     contactos_list = []
     for contacto in todos_los_contactos:
         atiende_set = contacto.atiende_set.all()
@@ -65,7 +65,7 @@ def consultar_cotizaciones(request):
         cotizaciones_list = Cotizacion.objects.all()
     else:
         current_vendedor = Vendedor.objects.get(user=current_user)
-        todos_los_contactos = Contacto.objects.all()
+        todos_los_contactos = Pozo.objects.all()
         contactos_list = obtener_contactos_list(current_vendedor)
         cotizaciones_list = obtener_cotizaciones_list(contactos_list)
 
@@ -102,7 +102,7 @@ def consultar_ventas(request):
         ventas_list = Venta.objects.all()
     else:
         current_vendedor = Vendedor.objects.get(user=current_user)
-        todos_los_contactos = Contacto.objects.all()
+        todos_los_contactos = Pozo.objects.all()
         contactos_list = obtener_contactos_list(current_vendedor)
         cotizaciones_list = obtener_cotizaciones_list(contactos_list)
         ventas_list = obtener_ventas_list(cotizaciones_list)
@@ -143,7 +143,7 @@ def registrar(request):
     contactos_list = obtener_contactos_ids(contactos_list)
     if request.method == 'POST':
         formCotizacion = CotizacionForm(request.POST)
-        formCotizacion.fields["contacto"].queryset = Contacto.objects.filter(pk__in=contactos_list)
+        formCotizacion.fields["contacto"].queryset = Pozo.objects.filter(pk__in=contactos_list)
         es_vendedor = no_es_vendedor(request.user)
         forms = {'formCotizacion':formCotizacion, 'no_es_vendedor':es_vendedor}
         if formCotizacion.is_valid():
@@ -155,7 +155,7 @@ def registrar(request):
             return render(request, 'principal/exito.html')
     else:
         formCotizacion = CotizacionForm()
-        formCotizacion.fields["contacto"].queryset = Contacto.objects.filter(pk__in=contactos_list)
+        formCotizacion.fields["contacto"].queryset = Pozo.objects.filter(pk__in=contactos_list)
         es_vendedor = no_es_vendedor(request.user)
         forms = {'formCotizacion':formCotizacion, 'no_es_vendedor':es_vendedor}
     return render(request, 'cotizaciones/registrar_cotizacion.html', forms)
@@ -244,7 +244,7 @@ def editar_cotizacion(request, id_cotizacion):
     contactos_list = obtener_contactos_ids(contactos_list)
     if request.method == 'POST':
         formCotizacion = CotizacionForm(request.POST)
-        formCotizacion.fields["contacto"].queryset = Contacto.objects.filter(pk__in=contactos_list)
+        formCotizacion.fields["contacto"].queryset = Pozo.objects.filter(pk__in=contactos_list)
         es_vendedor = no_es_vendedor(request.user)
         forms = {'formCotizacion':formCotizacion, 'no_es_vendedor':es_vendedor, 'cotizacion':cotizacion}
         if formCotizacion.is_valid():
@@ -259,7 +259,7 @@ def editar_cotizacion(request, id_cotizacion):
             return render(request, 'principal/exito.html')
     else:
         formCotizacion = CotizacionForm(instance=cotizacion)
-        formCotizacion.fields["contacto"].queryset = Contacto.objects.filter(pk__in=contactos_list)
+        formCotizacion.fields["contacto"].queryset = Pozo.objects.filter(pk__in=contactos_list)
         es_vendedor = no_es_vendedor(request.user)
         forms = {'formCotizacion':formCotizacion, 'no_es_vendedor':es_vendedor, 'cotizacion':cotizacion}
     return render(request, 'cotizaciones/editar_cotizacion.html', forms)

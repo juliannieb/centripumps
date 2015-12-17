@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.core.validators import MinValueValidator
 
-from contactos.models import Contacto
+from contactos.models import Pozo
 
 """ Los objetos tipo concepto, componen las cotizaciones y ventas,
     se dividen en servicios y productos """
@@ -33,7 +33,7 @@ class Cotizacion(models.Model):
     monto = models.FloatField(default=0, validators=[MinValueValidator(0)])
     descripcion = models.TextField()
     is_pendiente = models.BooleanField(default=True)
-    contacto = models.ForeignKey(Contacto)
+    contacto = models.ForeignKey(Pozo)
     """ Relación de los servicios y productos cotizados """
     conceptos = models.ManyToManyField(Concepto, through='Cotizado')
     fecha_creacion = models.DateField(editable=True)
