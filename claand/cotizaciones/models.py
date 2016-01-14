@@ -7,11 +7,30 @@ from contactos.models import Pozo
 
 """ Los objetos tipo concepto, componen las cotizaciones y ventas,
     se dividen en servicios y productos """
-class Concepto(models.Model):
+class Producto(models.Model):
     is_active = models.BooleanField(default=True)
     nombre = models.CharField(max_length=30)
-    costo = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    tipo = models.CharField(max_length=10)
+    lugar = models.CharField(max_length=50)
+    cantidad = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    fecha_creacion = models.DateField(editable=False)
+    fecha_modificacion = models.DateField()
+
+    def save(self, *args, **kwargs):
+        """ Override de save para que sólo haya una fecha de creación,
+        y si dicha tupla se modifica, se guarde la fecha de modificación.
+        """
+        if not self.id:
+            self.fecha_creacion = datetime.today()
+        self.fecha_modificacion = datetime.today()
+        return super(Venta, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.tipo) + ": " + self.nombre + ": $" + \
+        str(self.costo)
+
+class Servicio(models.Model):
+    is_active = models.BooleanField(default=True)
+    nombre = models.CharField(max_length=30)
     fecha_creacion = models.DateField(editable=False)
     fecha_modificacion = models.DateField()
 
@@ -34,8 +53,8 @@ class Cotizacion(models.Model):
     descripcion = models.TextField()
     is_pendiente = models.BooleanField(default=True)
     contacto = models.ForeignKey(Pozo)
-    """ Relación de los servicios y productos cotizados """
-    conceptos = models.ManyToManyField(Concepto, through='Cotizado')
+    productos = models.ManyToManyField(Producto, through='CotizacionUtilizaProducto')
+    servicios = models.ManyToManyField(Servicio, through='CotizacionUtilizaServicio')
     fecha_creacion = models.DateField(editable=True)
     fecha_modificacion = models.DateField()
 
@@ -101,15 +120,37 @@ class Pago(models.Model):
         return str(self.id) + ": " + self.venta.cotizacion.descripcion + ": $" + \
         str(self.monto)
 
-class Cotizado(models.Model):
-    cotizacion = models.ForeignKey(Cotizacion)
-    concepto = models.ForeignKey(Concepto)
-    fecha = models.DateField()
-
-    class Meta:
-        verbose_name_plural = 'Cotizados'
-
+class Proveedor(models.Model):
+    is_active = models.BooleanField(default=True)
+    nombre = models.CharField(max_length=30)
+    telefono = models.CharField(max_length=15)
+    productos = models.ManyToManyField(Producto, through='Vende')
+    servicios = models.ManyToManyField(Servicio, through='Brinda')
+    fecha_creacion = models.DateField(editable=False)
+    fecha_modificacion = models.DateField()
+    
     def save(self, *args, **kwargs):
         if not self.id:
             self.fecha = datetime.now()
         return super(Cotizado, self).save(*args, **kwargs)
+
+class Vende(models.Model):
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    precio = models.FloatField(default=0.0, validators=[MinValueValidator(0)])
+
+
+class Brinda(models.Model):
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE)
+    precio = models.FloatField(default=0.0, validators=[MinValueValidator(0)])
+
+class CotizacionUtilizaProducto(models.Model):
+    cotizacion = models.ForeignKey(Cotizacion, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.IntegerField(default=0)
+
+class CotizacionUtilizaServicio(models.Model):
+    cotizacion = models.ForeignKey(Cotizacion, on_delete=models.CASCADE)
+    servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE)
+    cantidad = models.IntegerField(default=0)
