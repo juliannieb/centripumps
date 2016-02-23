@@ -22,11 +22,10 @@ class Producto(models.Model):
         if not self.id:
             self.fecha_creacion = datetime.today()
         self.fecha_modificacion = datetime.today()
-        return super(Venta, self).save(*args, **kwargs)
+        return super(Producto, self).save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.tipo) + ": " + self.nombre + ": $" + \
-        str(self.costo)
+        return str(self.nombre)
 
 class Servicio(models.Model):
     is_active = models.BooleanField(default=True)
