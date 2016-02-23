@@ -326,8 +326,20 @@ def registrar_producto(request):
 @login_required
 def registrar_vende(request):
     es_vendedor = no_es_vendedor(request.user)
-    formVende = VendeForm()
-    forms = {'formVende':formVende, 'no_es_vendedor':es_vendedor}
+    if request.method == 'POST':
+        formVende = VendeForm(request.POST)
+        forms = {'formVende':formVende, 'no_es_vendedor':es_vendedor}
+        if formVende.is_valid():
+            data = formVende.cleaned_data
+            proveedor = data['proveedor']
+            producto = data['producto']
+            precio = data['precio']
+            vende = Vende(proveedor=proveedor, producto=producto, precio=precio)
+            vende.save()
+            return render(request, 'principal/exito.html')
+    else:
+        formVende = VendeForm()
+        forms = {'formVende':formVende, 'no_es_vendedor':es_vendedor}
     return render(request, 'cotizaciones/registrar_proveedor_vende_producto.html', forms)
 
 @login_required

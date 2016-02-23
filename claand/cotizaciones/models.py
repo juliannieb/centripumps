@@ -142,6 +142,9 @@ class Vende(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     precio = models.FloatField(default=0.0, validators=[MinValueValidator(0)])
 
+    def __str__(self):
+        return str(self.proveedor) + " - " + str(self.producto) + " - $" + str(self.precio)
+
 
 class Brinda(models.Model):
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
