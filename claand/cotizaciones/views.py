@@ -8,7 +8,7 @@ from cotizaciones.models import Cotizacion, Venta, Pago
 from principal.models import Vendedor
 from contactos.models import Pertenece
 
-from cotizaciones.forms import Pozo, CotizacionForm, VentaForm, PagoForm
+from cotizaciones.forms import *
 
 def no_es_vendedor(user):
     """ Funcion para el decorador user_passes_test
@@ -285,3 +285,10 @@ def editar_venta(request, id_venta):
         es_vendedor = no_es_vendedor(request.user)
         forms = {'formVenta':formVenta, 'no_es_vendedor':es_vendedor, 'venta':venta}
     return render(request, 'cotizaciones/editar_venta.html', forms)
+
+@login_required
+def registrar_proveedor(request):
+    es_vendedor = no_es_vendedor(request.user)
+    formProveedor = ProveedorForm()
+    forms = {'formProveedor':formProveedor, 'no_es_vendedor':es_vendedor}
+    return render(request, 'cotizaciones/registrar_proveedor.html', forms)
