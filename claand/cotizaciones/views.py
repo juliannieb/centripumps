@@ -299,3 +299,10 @@ def registrar_producto(request):
     formProducto = ProductoForm()
     forms = {'formProducto':formProducto, 'no_es_vendedor':es_vendedor}
     return render(request, 'cotizaciones/registrar_producto.html', forms)
+
+@login_required
+def registrar_vende(request):
+    es_vendedor = no_es_vendedor(request.user)
+    formVende = VendeForm()
+    forms = {'formVende':formVende, 'no_es_vendedor':es_vendedor}
+    return render(request, 'cotizaciones/registrar_proveedor_vende_producto.html', forms)
