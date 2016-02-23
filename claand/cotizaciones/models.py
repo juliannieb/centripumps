@@ -131,8 +131,12 @@ class Proveedor(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.id:
-            self.fecha = datetime.now()
-        return super(Cotizado, self).save(*args, **kwargs)
+            self.fecha_creacion = datetime.now()
+        self.fecha_modificacion = datetime.now()
+        return super(Proveedor, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.nombre)
 
 class Vende(models.Model):
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)

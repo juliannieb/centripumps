@@ -289,8 +289,19 @@ def editar_venta(request, id_venta):
 @login_required
 def registrar_proveedor(request):
     es_vendedor = no_es_vendedor(request.user)
-    formProveedor = ProveedorForm()
-    forms = {'formProveedor':formProveedor, 'no_es_vendedor':es_vendedor}
+    if request.method == 'POST':
+        formProveedor = ProveedorForm(request.POST)
+        forms = {'formProveedor':formProveedor, 'no_es_vendedor':es_vendedor}
+        if formProveedor.is_valid():
+            data = formProveedor.cleaned_data
+            nombre = data['nombre']
+            telefono = data['telefono']
+            proveedor = Proveedor(nombre=nombre, telefono=telefono)
+            proveedor.save()
+            return render(request, 'principal/exito.html')
+    else:
+        formProveedor = ProveedorForm()
+        forms = {'formProveedor':formProveedor, 'no_es_vendedor':es_vendedor}
     return render(request, 'cotizaciones/registrar_proveedor.html', forms)
 
 @login_required
@@ -306,3 +317,10 @@ def registrar_vende(request):
     formVende = VendeForm()
     forms = {'formVende':formVende, 'no_es_vendedor':es_vendedor}
     return render(request, 'cotizaciones/registrar_proveedor_vende_producto.html', forms)
+
+@login_required
+def registrar_brinda(request):
+    es_vendedor = no_es_vendedor(request.user)
+    formBrinda = BrindaForm()
+    forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor}
+    return render(request, 'cotizaciones/registrar_proveedor_brinda_servicio.html', forms)
