@@ -5,14 +5,14 @@
 
     <div class="container">
         <div class="page-header">
-            <h1>Todos los proveedores</h1>
+            <h1>Todos los servicios</h1>
         </div>
     </div>
-
+    
 
     <div class="container">
         <div class="row">
-            <a href="{% url 'cotizaciones:registrar_proveedor' %}" class="btn btn-success" style="float:right;">Crear nuevo</a>
+            <a href="{% url 'cotizaciones:registrar_servicio' %}" class="btn btn-success" style="float:right;">Crear nuevo</a>
         </div>
         <br/>
         <table class="sortable table table-hover" id="tableCotizaciones">
@@ -20,18 +20,16 @@
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
-                    <th>Teléfono</th>
                 </tr>
             </thead>
             <tbody>
-                {% for proveedor in proveedores %}
-                    {%if proveedor.is_active %}
+                {% for servicio in servicios %}
+                    {%if servicio.is_active %}
                         <tr class="link_fila">
                             <td>
-                                <a href="{% url 'cotizaciones:cotizacion' proveedor.id %}">{{ proveedor.id }}</a>
+                                <a href="{% url 'cotizaciones:cotizacion' servicio.id %}">{{ servicio.id }}</a>
                             </td>
-                            <td>{{proveedor.nombre}}</td>
-                            <td>{{proveedor.telefono}}</td>
+                            <td>{{servicio.nombre}}</td>
                         </tr>
                     {% endif %}
                 {% endfor %}

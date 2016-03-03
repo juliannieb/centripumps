@@ -332,6 +332,37 @@ def registrar_producto(request):
     return render(request, 'cotizaciones/registrar_producto.html', forms)
 
 @login_required
+def productos(request):
+    productos = Producto.objects.all()
+    context = {}
+    context['productos'] = productos
+    return render(request, 'cotizaciones/productos.html', context)
+
+@login_required
+def registrar_servicio(request):
+    es_vendedor = no_es_vendedor(request.user)
+    if request.method == 'POST':
+        formServicio = ServicioForm(request.POST)
+        forms = {'formServicio':formServicio, 'no_es_vendedor':es_vendedor}
+        if formServicio.is_valid():
+            data = formServicio.cleaned_data
+            nombre = data['nombre']
+            servicio = Servicio(nombre=nombre)
+            servicio.save()
+            return render(request, 'principal/exito.html')
+    else:
+        formServicio = ServicioForm()
+        forms = {'formServicio':formServicio, 'no_es_vendedor':es_vendedor}
+    return render(request, 'cotizaciones/registrar_servicio.html', forms)
+
+@login_required
+def servicios(request):
+    servicios = Servicio.objects.all()
+    context = {}
+    context['servicios'] = servicios
+    return render(request, 'cotizaciones/servicios.html', context)
+
+@login_required
 def registrar_vende(request):
     es_vendedor = no_es_vendedor(request.user)
     if request.method == 'POST':

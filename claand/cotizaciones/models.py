@@ -40,7 +40,7 @@ class Servicio(models.Model):
         if not self.id:
             self.fecha_creacion = datetime.today()
         self.fecha_modificacion = datetime.today()
-        return super(Venta, self).save(*args, **kwargs)
+        return super(Servicio, self).save(*args, **kwargs)
 
     def __str__(self):
         return str(self.tipo) + ": " + self.nombre + ": $" + \
