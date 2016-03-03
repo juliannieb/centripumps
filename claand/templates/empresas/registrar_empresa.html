@@ -54,28 +54,6 @@
                         </div>
                     </div>
 
-                    {% for hidden in formNumeroTelefonico.hidden_fields %}
-                        {{ hidden }}
-                    {% endfor %}
-
-                    <div class="row" style="margin-bottom:5px;">
-                        <div class="form-group">
-                            {{ formNumeroTelefonico.numero.errors }}
-                            {{ formNumeroTelefonico.tipo_numero.errors }}
-                            <label class="control-label col-sm-4" for="txt_redSocEmpresa">Teléfono:</label>
-                            <div class="col-sm-5">
-                                {{ formNumeroTelefonico.numero }}
-                            </div>
-                            <div class="col-sm-3">
-                                {{ formNumeroTelefonico.tipo_numero}}
-                            </div>
-                        </div>
-                    </div>
-
-                    {% for hidden in formRedSocial.hidden_fields %}
-                        {{ hidden }}
-                    {% endfor %}
-
                     <div class="row" style="margin-bottom:5px;">
                         <div class="form-group">
                             {{ formRedSocial.link.errors }}

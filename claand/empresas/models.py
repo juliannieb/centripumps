@@ -4,17 +4,27 @@ from django.template.defaultfilters import slugify
 
 class Cliente(models.Model):
     is_active = models.BooleanField(default=True)
-    nombre = models.CharField(max_length=30)
+    nombre_fiscal = models.CharField(max_length=50, default='')
     rfc = models.CharField(max_length=13, unique=True)
     slug = models.SlugField(unique=True, null=True)
+    telefono1 = models.CharField(max_length=10, default='', null=True)
+    telefono2 = models.CharField(max_length=10, default='', null=True)
+    telefono3 = models.CharField(max_length=10, default='', null=True)
+
     direcciones = models.ManyToManyField('Direccion', through='ClienteTieneDireccion')
+    correo1 = models.EmailField(null=True)
+    correo2 = models.EmailField(null=True)
+    correo3 = models.EmailField(null=True)
+    nombre_contacto1 = models.CharField(max_length=50, null=True)
+    nombre_contacto2 = models.CharField(max_length=50, null=True)
+    nombre_contacto3 = models.CharField(max_length=50, null=True)
 
     def save(self, *args, **kwargs):
         """ Override de save para que el RFC siempre se guarde
         en mayusculas.
         """
         if not self.id and not self.slug:
-            slug = slugify(self.nombre)
+            slug = slugify(self.nombre_fiscal)
             slug_exists = True
             counter = 1
             self.slug = slug
@@ -30,11 +40,11 @@ class Cliente(models.Model):
         super(Cliente, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.nombre
+        return self.nombre_fiscal
 
 class ClienteTieneDireccion(models.Model):
     fecha = models.DateField()
-    empresa = models.ForeignKey(Cliente)
+    cliente = models.ForeignKey('Cliente')
     direccion = models.ForeignKey('Direccion')
 
     def save(self, *args, **kwargs):
@@ -86,6 +96,7 @@ class Direccion(models.Model):
     is_active = models.BooleanField(default=True)
     direccion = models.CharField(max_length=100)
     municipio = models.ForeignKey(Municipio)
+    is_fiscal = models.BooleanField(default=False)
 
     def __str__(self):
         return self.direccion

@@ -20,13 +20,8 @@ class CredentialsAdmin(admin.ModelAdmin):
 
 class Pozo(models.Model):
     is_active = models.BooleanField(default=True)
-    is_cliente = models.BooleanField(default=False)
-    nombre = models.CharField(max_length=35)
-    apellido = models.CharField(max_length=35)
-    correo_electronico = models.EmailField(unique=True)
-    calificacion = models.ForeignKey('Calificacion', null=True)
-    empresa = models.ManyToManyField(Cliente, through='Pertenece')
-    vendedor = models.ManyToManyField(Vendedor, through='Atiende')
+    nombre = models.CharField(max_length=50)
+    cliente = models.ManyToManyField(Cliente, through='Pertenece')
     slug = models.SlugField(unique=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -53,10 +48,9 @@ class Pozo(models.Model):
         return self.nombre + " " + self.apellido
 
 class Pertenece(models.Model):
-    contacto = models.ForeignKey(Pozo)
-    empresa = models.ForeignKey(Cliente)
+    pozo = models.ForeignKey(Pozo)
+    cliente = models.ForeignKey(Cliente)
     fecha = models.DateField()
-    area = models.ForeignKey('Area')
 
     class Meta:
         verbose_name_plural = 'Pertenecen'
@@ -103,7 +97,7 @@ class Nota(models.Model):
     is_active = models.BooleanField(default=True)
     clasificacion = models.IntegerField(default=1)
     descripcion = models.TextField()
-    contacto = models.ForeignKey(Pozo)
+    Pozo = models.ForeignKey('Pozo', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.descripcion

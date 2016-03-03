@@ -4,15 +4,38 @@ from empresas.models import RedSocial, Estado, Municipio, Direccion
 from contactos.models import NumeroTelefonico, TipoNumeroTelefonico
 
 class ClienteForm(forms.ModelForm):
-	nombre = forms.CharField(max_length=30, help_text='Nombre: ', required=True, \
+	nombre_fiscal = forms.CharField(max_length=30, help_text='Nombre Fiscal: ', required=True, \
 		widget=forms.TextInput(attrs={'class': 'form-control'}))
 	rfc = forms.RegexField(max_length=13, help_text='RFC: ', regex=r'[a-zA-Z0-9]{13}', \
 		required=True, error_message ="Debe contener 13 letras y números", \
 		widget=forms.TextInput(attrs={'class': 'form-control'}))
 
+	nombre_contacto1 = forms.CharField(max_length=20, help_text='Nombre contacto 1: ', required=False, \
+		widget=forms.TextInput(attrs={'class': 'form-control'}))
+	nombre_contacto2 = forms.CharField(max_length=20, help_text='Nombre contacto 2: ', required=False, \
+		widget=forms.TextInput(attrs={'class': 'form-control'}))
+	nombre_contacto3 = forms.CharField(max_length=20, help_text='Nombre contacto 3: ', required=False, \
+		widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+	telefono1 = forms.IntegerField(help_text='Teléfono 1: ', required=False, \
+		widget=forms.NumberInput(attrs={'class': 'form-control'}))
+	telefono2 = forms.IntegerField(help_text='Teléfono 2: ', required=False, \
+		widget=forms.NumberInput(attrs={'class': 'form-control'}))
+	telefono3 = forms.IntegerField(help_text='Teléfono 3: ', required=False, \
+		widget=forms.NumberInput(attrs={'class': 'form-control'}))
+
+	correo1 = forms.CharField(max_length=20, help_text='Correo contacto 1: ', required=False, \
+		widget=forms.TextInput(attrs={'class': 'form-control'}))
+	correo2 = forms.CharField(max_length=20, help_text='Correo contacto 2: ', required=False, \
+		widget=forms.TextInput(attrs={'class': 'form-control'}))
+	correo3 = forms.CharField(max_length=20, help_text='Correo contacto 3: ', required=False, \
+		widget=forms.TextInput(attrs={'class': 'form-control'}))
+	
+
 	class Meta:
 		model = Cliente
-		fields = ('nombre', 'rfc',)
+		fields = ('nombre_fiscal', 'rfc', 'nombre_contacto1', 'nombre_contacto2', 'nombre_contacto3', 'telefono1', 'telefono2', 'telefono3', 'correo1', 'correo2', \
+			'correo3', )
 
 	def clean(self):
 		cleaned_data = self.cleaned_data
