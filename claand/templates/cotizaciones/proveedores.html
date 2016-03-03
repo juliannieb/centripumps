@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block content %}
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Todos los proveedores</h1>
+        </div>
+    </div>
+    
+
+    <div class="container">
+        <table class="sortable table table-hover" id="tableCotizaciones">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proveedor in proveedores %}
+                    {%if proveedor.is_active %}
+                        <tr class="link_fila">
+                            <td>
+                                <a href="{% url 'cotizaciones:cotizacion' proveedor.id %}">{{ proveedor.id }}</a>
+                            </td>
+                            <td>{{proveedor.nombre}}</td>
+                            <td>{{proveedor.telefono}}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock content%}

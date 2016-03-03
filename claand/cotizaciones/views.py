@@ -305,6 +305,14 @@ def registrar_proveedor(request):
     return render(request, 'cotizaciones/registrar_proveedor.html', forms)
 
 @login_required
+def proveedores(request):
+    proveedores = Proveedor.objects.all()
+    context = {}
+    context['proveedores'] = proveedores
+    return render(request, 'cotizaciones/proveedores.html', context)
+
+
+@login_required
 def registrar_producto(request):
     es_vendedor = no_es_vendedor(request.user)
     if request.method == 'POST':
