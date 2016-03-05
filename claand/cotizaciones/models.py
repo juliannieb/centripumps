@@ -43,8 +43,7 @@ class Servicio(models.Model):
         return super(Servicio, self).save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.tipo) + ": " + self.nombre + ": $" + \
-        str(self.costo)
+        return self.nombre
 
 class Cotizacion(models.Model):
     is_active = models.BooleanField(default=True)
