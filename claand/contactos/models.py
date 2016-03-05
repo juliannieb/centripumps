@@ -21,6 +21,7 @@ class CredentialsAdmin(admin.ModelAdmin):
 class Pozo(models.Model):
     is_active = models.BooleanField(default=True)
     nombre = models.CharField(max_length=50)
+    ubicacion = models.CharField(max_length=100, default='')
     cliente = models.ManyToManyField(Cliente, through='Pertenece')
     slug = models.SlugField(unique=True, null=True)
 
