@@ -311,6 +311,16 @@ def proveedores(request):
     context['proveedores'] = proveedores
     return render(request, 'cotizaciones/proveedores.html', context)
 
+@login_required
+def proveedor(request, id_proveedor):
+    """ Vista para mostrar el detalle de una proveedor.
+    """
+    proveedor = Proveedor.objects.get(id=id_proveedor)
+    # productos
+    # servicios
+    print('proveedor')
+    context = {}
+    return render(request, "cotizaciones/proveedor.html", context)
 
 @login_required
 def registrar_producto(request):
@@ -387,3 +397,4 @@ def registrar_brinda(request):
     formBrinda = BrindaForm()
     forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor}
     return render(request, 'cotizaciones/registrar_proveedor_brinda_servicio.html', forms)
+

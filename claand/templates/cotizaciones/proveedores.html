@@ -28,7 +28,7 @@
                     {%if proveedor.is_active %}
                         <tr class="link_fila">
                             <td>
-                                <a href="{% url 'cotizaciones:cotizacion' proveedor.id %}">{{ proveedor.id }}</a>
+                                <a href="{% url 'cotizaciones:proveedor' proveedor.id %}">{{ proveedor.id }}</a>
                             </td>
                             <td>{{proveedor.nombre}}</td>
                             <td>{{proveedor.telefono}}</td>
