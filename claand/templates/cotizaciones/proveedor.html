@@ -5,17 +5,40 @@
 
     <div class="container">
         <div class="page-header">
-            <h1>Todos los productos</h1>
+            <h1>{{proveedor.nombre}}</h1>
         </div>
+        <h4>Teléfono: {{proveedor.telefono}}</h4>
     </div>
     
 
     <div class="container">
-        <div class="row">
-            <a href="{% url 'cotizaciones:registrar_producto' %}" class="btn btn-success" style="float:right;">Crear nuevo</a>
-        </div>
         <br/>
-        <table class="sortable table table-hover" id="tableCotizaciones">
+        
+        <table class="sortable table table-hover" id="tablaProductos">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Fecha de cotización</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                    <tr class="link_fila">
+                        <td>
+                            <a href="{% url 'cotizaciones:producto' producto.producto.id %}">{{ producto.producto.id }}</a>
+                        </td>
+                        <td>{{producto.producto}}</td>
+                        <td>{{producto.precio}}</td>
+                        <td>{{producto.producto.cantidad}}</td>
+                        <td>{{producto.fecha_modificacion}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <table class="sortable table table-hover" id="tablaServicios">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -25,17 +48,14 @@
                 </tr>
             </thead>
             <tbody>
-                {% for producto in productos %}
-                    {%if producto.is_active %}
-                        <tr class="link_fila">
-                            <td>
-                                <a href="{% url 'cotizaciones:producto' producto.id %}">{{ producto.id }}</a>
-                            </td>
-                            <td>{{producto.nombre}}</td>
-                            <td>{{producto.cantidad}}</td>
-                            <td>{{producto.lugar}}</td>
-                        </tr>
-                    {% endif %}
+                {% for servicio in servicios %}
+                    <tr class="link_fila">
+                        <td>
+                            <a href="{% url 'cotizaciones:producto' producto.id %}">{{ producto.id }}</a>
+                        </td>
+                        <td>{{servicio.servicio}}</td>
+                        <td>{{servicio.precio}}</td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

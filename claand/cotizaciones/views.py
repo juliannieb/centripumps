@@ -309,7 +309,6 @@ def proveedores(request):
     proveedores = Proveedor.objects.all()
     context = {}
     context['proveedores'] = proveedores
-    print ('KHEEE')
     return render(request, 'cotizaciones/proveedores.html', context)
 
 @login_required
@@ -318,12 +317,12 @@ def proveedor(request, id_proveedor):
     """
     proveedor = Proveedor.objects.get(id=id_proveedor)
     productos = Vende.objects.filter(proveedor=id_proveedor)
+    servicios = Brinda.objects.filter(proveedor=id_proveedor)
     print(productos)
-    print(proveedor)
-    # productos
-    # servicios
-    print('proveedor')
     context = {}
+    context['proveedor'] = proveedor
+    context['productos'] = productos
+    context['servicios'] = servicios
     return render(request, "cotizaciones/proveedor.html", context)
 
 @login_required
