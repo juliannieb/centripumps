@@ -26,7 +26,10 @@ urlpatterns = patterns('',
         url(r'^proveedores/(?P<id_proveedor>[\w\-]+)/$', views.proveedor, name='proveedor'),
         
         url(r'^registrar_producto/', views.registrar_producto, name='registrar_producto'),
+
         url(r'^productos/', views.productos, name='productos'),
+        url(r'^productos/(?P<id_producto>[\w\-]+)/$', views.producto, name='producto'),
+
         url(r'^registrar_servicio/', views.registrar_servicio, name='registrar_servicio'),
         url(r'^servicios/', views.servicios, name='servicios'),
         url(r'^registrar_vende/', views.registrar_vende, name='registrar_vende'),

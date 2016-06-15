@@ -309,6 +309,7 @@ def proveedores(request):
     proveedores = Proveedor.objects.all()
     context = {}
     context['proveedores'] = proveedores
+    print ('KHEEE')
     return render(request, 'cotizaciones/proveedores.html', context)
 
 @login_required
@@ -316,6 +317,9 @@ def proveedor(request, id_proveedor):
     """ Vista para mostrar el detalle de una proveedor.
     """
     proveedor = Proveedor.objects.get(id=id_proveedor)
+    productos = Vende.objects.filter(proveedor=id_proveedor)
+    print(productos)
+    print(proveedor)
     # productos
     # servicios
     print('proveedor')
@@ -347,6 +351,29 @@ def productos(request):
     context = {}
     context['productos'] = productos
     return render(request, 'cotizaciones/productos.html', context)
+
+@login_required
+def producto(request, id_producto):
+    producto = Producto.objects.get(id=id_producto)
+    context = {}
+    context['producto'] = producto
+    return render(request, 'cotizaciones/producto.html', context)
+"""
+@login_required
+def cotizacion(request, id_cotizacion):
+
+    cotizacion = Cotizacion.objects.get(id=id_cotizacion)
+    contacto = cotizacion.contacto
+    pertenece = Pertenece.objects.get(contacto=contacto)
+    es_vendedor = no_es_vendedor(request.user)
+
+    context = {}
+    context['cotizacion'] = cotizacion
+    context['contacto'] = contacto
+    context['pertenece'] = pertenece
+    context['no_es_vendedor'] = es_vendedor
+    return render(request, "cotizaciones/cotizacion.html", context)
+"""
 
 @login_required
 def registrar_servicio(request):
