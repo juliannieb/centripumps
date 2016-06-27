@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import date
 from django.forms.util import ErrorList
 
-from cotizaciones.models import Cotizacion, Venta, Pago
+from cotizaciones.models import *
 from principal.models import Vendedor
 from contactos.models import Pertenece
 
@@ -428,8 +428,60 @@ def registrar_vende(request):
     return render(request, 'cotizaciones/registrar_proveedor_vende_producto.html', forms)
 
 @login_required
+def registrar_vende_proveedor(request, id_proveedor):
+    es_vendedor = no_es_vendedor(request.user)
+    if request.method == 'POST':
+        formVende = VendeForm(request.POST)
+        forms = {'formVende':formVende, 'no_es_vendedor':es_vendedor}
+        if formVende.is_valid():
+            data = formVende.cleaned_data
+            proveedor = data['proveedor']
+            producto = data['producto']
+            precio = data['precio']
+            vende = Vende(proveedor=proveedor, producto=producto, precio=precio)
+            vende.save()
+            return render(request, 'principal/exito.html')
+    else:
+        proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
+        formVende = VendeForm(initial={'proveedor': proveedor})
+        forms = {'formVende':formVende, 'no_es_vendedor':es_vendedor}
+    return render(request, 'cotizaciones/registrar_proveedor_vende_producto.html', forms)
+
+@login_required
 def registrar_brinda(request):
     es_vendedor = no_es_vendedor(request.user)
-    formBrinda = BrindaForm()
-    forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor}
+    if request.method == 'POST':
+        formBrinda = BrindaForm(request.POST)
+        forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor}
+        if formBrinda.is_valid():
+            data = formBrinda.cleaned_data
+            proveedor = data['proveedor']
+            servicio = data['servicio']
+            precio = data['precio']
+            brinda = Brinda(proveedor=proveedor, servicio=servicio, precio=precio)
+            brinda.save()
+            return render(request, 'principal/exito.html')
+    else:
+        formBrinda = BrindaForm()
+        forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor}
+    return render(request, 'cotizaciones/registrar_proveedor_brinda_servicio.html', forms)
+
+@login_required
+def registrar_brinda_proveedor(request, id_proveedor):
+    es_vendedor = no_es_vendedor(request.user)
+    if request.method == 'POST':
+        formBrinda = BrindaForm(request.POST)
+        forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor}
+        if formBrinda.is_valid():
+            data = formBrinda.cleaned_data
+            proveedor = data['proveedor']
+            servicio = data['servicio']
+            precio = data['precio']
+            brinda = Brinda(proveedor=proveedor, servicio=servicio, precio=precio)
+            brinda.save()
+            return render(request, 'principal/exito.html')
+    else:
+        proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
+        formBrinda = BrindaForm(initial={'proveedor': proveedor})
+        forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor}
     return render(request, 'cotizaciones/registrar_proveedor_brinda_servicio.html', forms)

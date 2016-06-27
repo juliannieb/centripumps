@@ -48,7 +48,7 @@
 
 <div class="container">
     <div class="row">
-        <a href="{% url 'cotizaciones:registrar_proveedor' %}" class="btn btn-success" style="float:right;">Crear nuevo</a>
+        <a href="{% url 'cotizaciones:registrar_vende_proveedor' proveedor.id %}" class="btn btn-success" style="float:right;">Crear nuevo</a>
     </div>
     <br/>
     <table class="sortable table table-hover" id="tableCotizaciones">
@@ -82,7 +82,7 @@
 
 <div class="container">
     <div class="row">
-        <a href="{% url 'cotizaciones:registrar_proveedor' %}" class="btn btn-success" style="float:right;">Crear nuevo</a>
+        <a href="{% url 'cotizaciones:registrar_brinda_proveedor' proveedor.id %}" class="btn btn-success" style="float:right;">Crear nuevo</a>
     </div>
     <br/>
     <table class="sortable table table-hover" id="tableCotizaciones">

@@ -104,7 +104,7 @@ class Pago(models.Model):
     fecha_creacion = models.DateField(editable=False)
     fecha_modificacion = models.DateField()
     monto = models.FloatField(validators=[MinValueValidator(0)])
-    
+
     def save(self, *args, **kwargs):
         """ Override de save para que sólo haya una fecha de creación,
         y si dicha tupla se modifica, se guarde la fecha de modificación.
@@ -126,7 +126,7 @@ class Proveedor(models.Model):
     servicios = models.ManyToManyField(Servicio, through='Brinda')
     fecha_creacion = models.DateField(editable=False)
     fecha_modificacion = models.DateField()
-    
+
     def save(self, *args, **kwargs):
         if not self.id:
             self.fecha_creacion = datetime.now()
@@ -147,7 +147,7 @@ class Vende(models.Model):
         if not self.id:
             self.fecha_creacion = datetime.now()
         self.fecha_modificacion = datetime.now()
-        return super(Proveedor, self).save(*args, **kwargs)
+        return super(Vende, self).save(*args, **kwargs)
 
     def __str__(self):
         return str(self.proveedor) + " - " + str(self.producto) + " - $" + str(self.precio)
@@ -164,7 +164,7 @@ class Brinda(models.Model):
         if not self.id:
             self.fecha_creacion = datetime.now()
         self.fecha_modificacion = datetime.now()
-        return super(Proveedor, self).save(*args, **kwargs)
+        return super(Brinda, self).save(*args, **kwargs)
 
 class CotizacionUtilizaProducto(models.Model):
     cotizacion = models.ForeignKey(Cotizacion, on_delete=models.CASCADE)
