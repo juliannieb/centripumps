@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from datetime import date
@@ -315,12 +315,25 @@ def proveedores(request):
 def proveedor(request, id_proveedor):
     """ Vista para mostrar el detalle de una proveedor.
     """
-    proveedor = Proveedor.objects.get(id=id_proveedor)
+    proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
+    proveedor_vende_productos = Vende.objects.filter(proveedor=proveedor)
+    proveedor_brinda_servicios = Brinda.objects.filter(proveedor=proveedor)
     # productos
     # servicios
     print('proveedor')
     context = {}
+    context['proveedor'] = proveedor
+    context['proveedor_vende_productos'] = proveedor_vende_productos
+    context['proveedor_brinda_servicios'] = proveedor_brinda_servicios
     return render(request, "cotizaciones/proveedor.html", context)
+
+@login_required
+def editar_proveedor(request, id_proveedor):
+    return redirect('proveedor', id_proveedor=id_proveedor)
+
+@login_required
+def eliminar_proveedor(request, id_proveedor):
+    return redirect('proveedor', id_proveedor=id_proveedor)
 
 @login_required
 def registrar_producto(request):
@@ -397,4 +410,3 @@ def registrar_brinda(request):
     formBrinda = BrindaForm()
     forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor}
     return render(request, 'cotizaciones/registrar_proveedor_brinda_servicio.html', forms)
-

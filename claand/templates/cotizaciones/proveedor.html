@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="page-header">
+        <h1>{{ proveedor.nombre }}</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="row row-centered">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-centered">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{proveedor.nombre}}</h3>
+              </div>
+              <div class="panel-body">
+                Teléfono: {{ proveedor.telefono }}</br>
+              </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="btn_submitContacto" class="btn btn-danger pull-right"  id="boton_eliminar">Eliminar</button>
+
+                        <a href="{% url 'cotizaciones:editar_proveedor' proveedor.id %}">
+                            <button style="margin-right: 5px" type="btn_submitContacto" class="btn btn-success pull-right">Editar</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row pull-right">
+                <div class="col-sm-12 pull-right">
+                    <a href="{% url 'cotizaciones:eliminar_proveedor' proveedor.id %}" id="boton_confirmar">Sí quiero borrar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Productos</h1>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <a href="{% url 'cotizaciones:registrar_proveedor' %}" class="btn btn-success" style="float:right;">Crear nuevo</a>
+    </div>
+    <br/>
+    <table class="sortable table table-hover" id="tableCotizaciones">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Producto</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in proveedor_vende_productos %}
+                <tr class="link_fila">
+                    <td>
+                        <a href="{% url 'cotizaciones:proveedor' proveedor.id %}">{{ producto.id }}</a>
+                    </td>
+                    <td>{{producto.producto}}</td>
+                    <td>{{producto.precio}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Servicios</h1>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <a href="{% url 'cotizaciones:registrar_proveedor' %}" class="btn btn-success" style="float:right;">Crear nuevo</a>
+    </div>
+    <br/>
+    <table class="sortable table table-hover" id="tableCotizaciones">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Servicio</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for servicio in proveedor_brinda_servicios %}
+                <tr class="link_fila">
+                    <td>
+                        <a href="{% url 'cotizaciones:proveedor' proveedor.id %}">{{ servicio.id }}</a>
+                    </td>
+                    <td>{{servicio.servicio}}</td>
+                    <td>{{servicio.precio}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content%}
