@@ -29,7 +29,7 @@
                     {%if producto.is_active %}
                         <tr class="link_fila">
                             <td>
-                                <a href="{% url 'cotizaciones:cotizacion' producto.id %}">{{ producto.id }}</a>
+                                <a href="{% url 'cotizaciones:producto' producto.id %}">{{ producto.id }}</a>
                             </td>
                             <td>{{producto.nombre}}</td>
                             <td>{{producto.cantidad}}</td>

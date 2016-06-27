@@ -140,6 +140,14 @@ class Vende(models.Model):
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     precio = models.FloatField(default=0.0, validators=[MinValueValidator(0)])
+    fecha_creacion = models.DateField(editable=False, null=True)
+    fecha_modificacion = models.DateField(null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.fecha_creacion = datetime.now()
+        self.fecha_modificacion = datetime.now()
+        return super(Proveedor, self).save(*args, **kwargs)
 
     def __str__(self):
         return str(self.proveedor) + " - " + str(self.producto) + " - $" + str(self.precio)
@@ -149,6 +157,14 @@ class Brinda(models.Model):
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE)
     precio = models.FloatField(default=0.0, validators=[MinValueValidator(0)])
+    fecha_creacion = models.DateField(editable=False, null=True)
+    fecha_modificacion = models.DateField(null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.fecha_creacion = datetime.now()
+        self.fecha_modificacion = datetime.now()
+        return super(Proveedor, self).save(*args, **kwargs)
 
 class CotizacionUtilizaProducto(models.Model):
     cotizacion = models.ForeignKey(Cotizacion, on_delete=models.CASCADE)
