@@ -11,9 +11,9 @@
     <!-- <link href="navbar-fixed-top.css" rel="stylesheet"> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" 
+    <link rel="stylesheet"
     href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
-    <script type="text/javascript" 
+    <script type="text/javascript"
     src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 
     {% block head_content %}
@@ -49,11 +49,13 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'contactos:registrar_contactos' %}">Registrar contacto</a></li>
-                        <li><a href="{% url 'contactos:registrar_llamada' %}">Registrar llamada</a></li>
+                        <li><a href="{% url 'contactos:registrar_contactos' %}">Contacto</a></li>
+                        <li><a href="{% url 'cotizaciones:proveedores' %}">Proveedores</a></li>
+                        <li><a href="{% url 'cotizaciones:productos' %}">Productos</a></li>
+                        <li><a href="{% url 'cotizaciones:servicios' %}">Servicios</a></li>
                         <li><a href="{% url 'cotizaciones:registrar_cotizacion' %}">Registrar cotización</a></li>
                         <li><a href="{% url 'principal:consultar' %}">Consultar</a></li>
-                    
+
                         <li><a href="{% url 'principal:logout' %}">Logout</a></li>
                     {% endif %}
                 </ul>
