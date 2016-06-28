@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from datetime import date
@@ -329,11 +330,26 @@ def proveedor(request, id_proveedor):
 
 @login_required
 def editar_proveedor(request, id_proveedor):
-    return redirect('proveedor', id_proveedor=id_proveedor)
+    es_vendedor = no_es_vendedor(request.user)
+    if request.method == 'POST':
+        proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
+        formProveedor = ProveedorForm(request.POST, instance=proveedor)
+        forms = {'formProveedor':formProveedor, 'no_es_vendedor':es_vendedor, 'id_proveedor': id_proveedor}
+        if formProveedor.is_valid():
+            proveedor = formProveedor.save()
+            proveedor.save()
+            return render(request, 'principal/exito.html')
+    else:
+        proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
+        formProveedor = ProveedorForm(instance=proveedor)
+        forms = {'formProveedor':formProveedor, 'no_es_vendedor':es_vendedor, 'id_proveedor': id_proveedor}
+    return render(request, 'cotizaciones/editar_proveedor.html', forms)
 
 @login_required
 def eliminar_proveedor(request, id_proveedor):
-    return redirect('proveedor', id_proveedor=id_proveedor)
+    proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
+    proveedor.delete()
+    return render(request, 'principal/exito.html')
 
 @login_required
 def registrar_producto(request):
