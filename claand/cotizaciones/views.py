@@ -383,6 +383,30 @@ def producto(request, id_producto):
     context = {}
     context['producto'] = producto
     return render(request, 'cotizaciones/producto.html', context)
+
+@login_required
+def editar_producto(request, id_producto):
+    es_vendedor = no_es_vendedor(request.user)
+    if request.method == 'POST':
+        producto = get_object_or_404(Producto, pk=id_producto)
+        formProducto = ProductoForm(request.POST, instance=producto)
+        forms = {'formProducto':formProducto, 'no_es_vendedor':es_vendedor, 'id_producto': id_producto}
+        if formProducto.is_valid():
+            producto = formProducto.save()
+            producto.save()
+            return render(request, 'principal/exito.html')
+    else:
+        producto = get_object_or_404(Producto, pk=id_producto)
+        formProducto = ProductoForm(instance=producto)
+        forms = {'formProducto':formProducto, 'no_es_vendedor':es_vendedor, 'id_producto': id_producto}
+    return render(request, 'cotizaciones/editar_producto.html', forms)
+
+@login_required
+def eliminar_producto(request, id_producto):
+    producto = get_object_or_404(Producto, pk=id_producto)
+    producto.delete()
+    return render(request, 'principal/exito.html')
+
 """
 @login_required
 def cotizacion(request, id_cotizacion):
