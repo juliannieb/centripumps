@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="page-header">
+        <h1>{{ servicio.nombre }}</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="row row-centered">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-centered">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{servicio.nombre}}</h3>
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="btn_submitContacto" class="btn btn-danger pull-right"  id="boton_eliminar">Eliminar</button>
+
+                        <a href="{% url 'cotizaciones:editar_servicio' servicio.id %}">
+                            <button style="margin-right: 5px" type="btn_submitContacto" class="btn btn-success pull-right">Editar</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row pull-right">
+                <div class="col-sm-12 pull-right">
+                    <a href="{% url 'cotizaciones:eliminar_servicio' servicio.id %}" id="boton_confirmar">Sí quiero borrar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Proveedores</h1>
+    </div>
+</div>
+
+
+<div class="container">
+    <table class="sortable table table-hover" id="tableCotizaciones">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proveedor</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for brinda in proveedores_brindan_servicio %}
+                <tr class="link_fila">
+                    <td>
+                        <a href="{% url 'cotizaciones:proveedor' brinda.proveedor.id %}">{{ brinda.id }}</a>
+                    </td>
+                    <td>{{brinda.proveedor}}</td>
+                    <td>{{brinda.precio}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content%}

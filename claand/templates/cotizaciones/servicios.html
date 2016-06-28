@@ -8,7 +8,7 @@
             <h1>Todos los servicios</h1>
         </div>
     </div>
-    
+
 
     <div class="container">
         <div class="row">
@@ -27,7 +27,7 @@
                     {%if servicio.is_active %}
                         <tr class="link_fila">
                             <td>
-                                <a href="{% url 'cotizaciones:cotizacion' servicio.id %}">{{ servicio.id }}</a>
+                                <a href="{% url 'cotizaciones:servicio' servicio.id %}">{{ servicio.id }}</a>
                             </td>
                             <td>{{servicio.nombre}}</td>
                         </tr>

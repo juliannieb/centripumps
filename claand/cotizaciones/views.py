@@ -451,6 +451,38 @@ def servicios(request):
     return render(request, 'cotizaciones/servicios.html', context)
 
 @login_required
+def servicio(request, id_servicio):
+    servicio = Servicio.objects.get(id=id_servicio)
+    proveedores_brindan_servicio = Brinda.objects.filter(servicio=servicio)
+    context = {}
+    context['servicio'] = servicio
+    context['proveedores_brindan_servicio'] = proveedores_brindan_servicio
+    return render(request, 'cotizaciones/servicio.html', context)
+
+@login_required
+def editar_servicio(request, id_servicio):
+    es_vendedor = no_es_vendedor(request.user)
+    if request.method == 'POST':
+        servicio = get_object_or_404(Servicio, pk=id_servicio)
+        formServicio = ServicioForm(request.POST, instance=servicio)
+        forms = {'formServicio':formServicio, 'no_es_vendedor':es_vendedor, 'id_servicio': id_servicio}
+        if formServicio.is_valid():
+            servicio = formServicio.save()
+            servicio.save()
+            return render(request, 'principal/exito.html')
+    else:
+        servicio = get_object_or_404(Servicio, pk=id_servicio)
+        formServicio = ServicioForm(instance=servicio)
+        forms = {'formServicio':formServicio, 'no_es_vendedor':es_vendedor, 'id_servicio': id_servicio}
+    return render(request, 'cotizaciones/editar_servicio.html', forms)
+
+@login_required
+def eliminar_servicio(request, id_servicio):
+    servicio = get_object_or_404(Servicio, pk=id_servicio)
+    servicio.delete()
+    return render(request, 'principal/exito.html')
+
+@login_required
 def registrar_vende(request):
     es_vendedor = no_es_vendedor(request.user)
     if request.method == 'POST':

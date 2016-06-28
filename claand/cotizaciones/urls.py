@@ -37,6 +37,11 @@ urlpatterns = patterns('',
         	name="editar_producto"),
         url(r'^registrar_servicio/$', views.registrar_servicio, name='registrar_servicio'),
         url(r'^servicios/$', views.servicios, name='servicios'),
+        url(r'^servicios/(?P<id_servicio>[\w\-]+)/$', views.servicio, name='servicio'),
+        url(r'^eliminar-servicio/(?P<id_servicio>[\w\-]+)/$', views.eliminar_servicio, \
+        	name="eliminar_servicio"),
+        url(r'^editar-servicio/(?P<id_servicio>[\w\-]+)/$', views.editar_servicio, \
+        	name="editar_servicio"),
         url(r'^registrar_vende/$', views.registrar_vende, name='registrar_vende'),
         url(r'^registrar_brinda/$', views.registrar_brinda, name='registrar_brinda'),
         url(r'^registrar_vende/(?P<id_proveedor>[\w\-]+)/$', views.registrar_vende_proveedor, name='registrar_vende_proveedor'),
