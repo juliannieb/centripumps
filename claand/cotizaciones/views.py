@@ -380,8 +380,10 @@ def productos(request):
 @login_required
 def producto(request, id_producto):
     producto = Producto.objects.get(id=id_producto)
+    proveedores_venden_producto = Vende.objects.filter(producto=producto)
     context = {}
     context['producto'] = producto
+    context['proveedores_venden_producto'] = proveedores_venden_producto
     return render(request, 'cotizaciones/producto.html', context)
 
 @login_required

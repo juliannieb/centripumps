@@ -60,7 +60,7 @@
             {% for vende in proveedores_venden_producto %}
                 <tr class="link_fila">
                     <td>
-                        <a href="{% url 'cotizaciones:proveedor' proveedor.id %}">{{ vende.id }}</a>
+                        <a href="{% url 'cotizaciones:proveedor' vende.proveedor.id %}">{{ vende.id }}</a>
                     </td>
                     <td>{{vende.proveedor}}</td>
                     <td>{{vende.precio}}</td>
