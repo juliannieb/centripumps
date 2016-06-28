@@ -46,4 +46,12 @@ urlpatterns = patterns('',
         url(r'^registrar_brinda/$', views.registrar_brinda, name='registrar_brinda'),
         url(r'^registrar_vende/(?P<id_proveedor>[\w\-]+)/$', views.registrar_vende_proveedor, name='registrar_vende_proveedor'),
         url(r'^registrar_brinda/(?P<id_proveedor>[\w\-]+)/$', views.registrar_brinda_proveedor, name='registrar_brinda_proveedor'),
+        url(r'^eliminar-vende/(?P<id_vende>[\w\-]+)/$', views.eliminar_vende, \
+        	name="eliminar_vende"),
+        url(r'^eliminar-brinda/(?P<id_brinda>[\w\-]+)/$', views.eliminar_brinda, \
+            name="eliminar_brinda"),
+        url(r'^editar-vende/(?P<id_vende>[\w\-]+)/$', views.editar_vende, \
+        	name="editar_vende"),
+        url(r'^editar-brinda/(?P<id_brinda>[\w\-]+)/$', views.editar_brinda, \
+        	name="editar_brinda"),
         )

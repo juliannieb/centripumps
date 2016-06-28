@@ -63,7 +63,7 @@
             {% for producto in proveedor_vende_productos %}
                 <tr class="link_fila">
                     <td>
-                        <a href="{% url 'cotizaciones:proveedor' proveedor.id %}">{{ producto.id }}</a>
+                        <a href="{% url 'cotizaciones:editar_vende' producto.id %}">{{ producto.id }}</a>
                     </td>
                     <td>{{producto.producto}}</td>
                     <td>{{producto.precio}}</td>
@@ -97,7 +97,7 @@
             {% for servicio in proveedor_brinda_servicios %}
                 <tr class="link_fila">
                     <td>
-                        <a href="{% url 'cotizaciones:proveedor' proveedor.id %}">{{ servicio.id }}</a>
+                        <a href="{% url 'cotizaciones:editar_brinda' servicio.id %}">{{ servicio.id }}</a>
                     </td>
                     <td>{{servicio.servicio}}</td>
                     <td>{{servicio.precio}}</td>

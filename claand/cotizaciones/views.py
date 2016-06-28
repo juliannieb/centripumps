@@ -522,6 +522,29 @@ def registrar_vende_proveedor(request, id_proveedor):
     return render(request, 'cotizaciones/registrar_proveedor_vende_producto.html', forms)
 
 @login_required
+def editar_vende(request, id_vende):
+    es_vendedor = no_es_vendedor(request.user)
+    if request.method == 'POST':
+        vende = get_object_or_404(Vende, pk=id_vende)
+        formVende = VendeForm(request.POST, instance=vende)
+        forms = {'formVende':formVende, 'no_es_vendedor':es_vendedor, 'id_vende': id_vende}
+        if formVende.is_valid():
+            vende = formVende.save()
+            vende.save()
+            return render(request, 'principal/exito.html')
+    else:
+        vende = get_object_or_404(Vende, pk=id_vende)
+        formVende = VendeForm(instance=vende)
+        forms = {'formVende':formVende, 'no_es_vendedor':es_vendedor, 'id_vende': id_vende}
+    return render(request, 'cotizaciones/editar_vende.html', forms)
+
+@login_required
+def eliminar_vende(request, id_vende):
+    vende = get_object_or_404(Vende, pk=id_vende)
+    vende.delete()
+    return render(request, 'principal/exito.html')
+
+@login_required
 def registrar_brinda(request):
     es_vendedor = no_es_vendedor(request.user)
     if request.method == 'POST':
@@ -559,3 +582,26 @@ def registrar_brinda_proveedor(request, id_proveedor):
         formBrinda = BrindaForm(initial={'proveedor': proveedor})
         forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor}
     return render(request, 'cotizaciones/registrar_proveedor_brinda_servicio.html', forms)
+
+@login_required
+def editar_brinda(request, id_brinda):
+    es_vendedor = no_es_vendedor(request.user)
+    if request.method == 'POST':
+        brinda = get_object_or_404(Brinda, pk=id_brinda)
+        formBrinda = BrindaForm(request.POST, instance=brinda)
+        forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor, 'id_brinda': id_brinda}
+        if formBrinda.is_valid():
+            brinda = formBrinda.save()
+            brinda.save()
+            return render(request, 'principal/exito.html')
+    else:
+        brinda = get_object_or_404(Brinda, pk=id_brinda)
+        formBrinda = BrindaForm(instance=brinda)
+        forms = {'formBrinda':formBrinda, 'no_es_vendedor':es_vendedor, 'id_brinda': id_brinda}
+    return render(request, 'cotizaciones/editar_brinda.html', forms)
+
+@login_required
+def eliminar_brinda(request, id_brinda):
+    brinda = get_object_or_404(Brinda, pk=id_brinda)
+    brinda.delete()
+    return render(request, 'principal/exito.html')
