@@ -8,24 +8,14 @@ from principal.models import Vendedor
 class PozoForm(forms.ModelForm):
     nombre = forms.CharField(max_length=35, help_text='Nombre: ', \
         required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    apellido = forms.CharField(max_length=35, help_text='Apellido: ', \
+    ubicacion = forms.CharField(max_length=35, help_text='Ubicacion: ', \
         required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     empresa = forms.ModelChoiceField(queryset=Cliente.objects.all(), \
         help_text='Cliente: ', required=True, widget=forms.Select(attrs={'class': 'form-control'}))
-    area = forms.ModelChoiceField(queryset=Area.objects.all(), help_text='Area: ', \
-        required=True, widget=forms.Select(attrs={'class': 'form-control'}))
-    correo_electronico = forms.EmailField(help_text='Email: ', required=True, \
-        widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    calificacion = forms.ModelChoiceField(help_text='Calificación: ', \
-        queryset=Calificacion.objects.all(), required=True, \
-        widget=forms.Select(attrs={'class':'form-control'}))
-    is_cliente = forms.BooleanField(help_text='Cliente: ', required=False, \
-        widget=forms.CheckboxInput(attrs={'class':'form-control'}))
 
     class Meta:
         model = Pozo
-        fields = ('nombre', 'apellido', 'empresa', 'area', 'correo_electronico', \
-            'calificacion', 'is_cliente',)
+        fields = ('nombre', 'ubicacion', 'cliente',)
 
 class LlamadaForm(forms.ModelForm):
     contacto = forms.ModelChoiceField(queryset=Pozo.objects.all(), help_text='Pozo: ', \

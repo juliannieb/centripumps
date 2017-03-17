@@ -119,26 +119,23 @@ def contacto(request, contacto_nombre_slug):
     """ Vista para mostrar todo el detalle de un contacto en particular.
     """
     contacto = Pozo.objects.get(slug=contacto_nombre_slug)
-    pertenece = Pertenece.objects.filter(contacto=contacto)
+    pertenece = Pertenece.objects.filter(pozo=contacto)
+    print(pertenece)
     pertenece = pertenece[len(pertenece) - 1]
     numeros_list = contacto.numerotelefonico_set.all()
-    calificacion = Calificacion.objects.get(contacto=contacto)
     cotizaciones_list = Cotizacion.objects.filter(contacto=contacto)
     ventas_list = Venta.objects.filter(cotizacion=cotizaciones_list)
     llamadas_list = Llamada.objects.all()
     es_vendedor = no_es_vendedor(request.user)
-    notas_list = Nota.objects.filter(contacto=contacto)
     recordatorios_list = Recordatorio.objects.filter(contacto=contacto)
     context = {}
     context['contacto'] = contacto
     context['pertenece'] = pertenece
     context['numeros_list'] = numeros_list
-    context['calificacion'] = calificacion
     context['cotizaciones_list'] = cotizaciones_list
     context['llamadas_list'] = llamadas_list
     context['no_es_vendedor'] = es_vendedor
     context['ventas_list'] = ventas_list
-    context['notas_list'] = notas_list
     context['recordatorios_list'] = recordatorios_list
     return render(request, 'contactos/contacto.html', context)
 
@@ -173,18 +170,17 @@ def registrar_contacto(request):
             if es_valido:
                 data = formPozo.cleaned_data
                 nombre = data['nombre']
-                apellido = data['apellido']
-                correo_electronico = data['correo_electronico']
-                empresa = data['empresa']
-                area = data['area']
-                is_cliente = data['is_cliente']
-                calificacion = data['calificacion']
-                contacto = Pozo(nombre=nombre, apellido=apellido, correo_electronico=correo_electronico, \
-                    calificacion=calificacion, is_cliente=is_cliente)
+                ubicacion = data['ubicacion']
+                #is_cliente = data['is_cliente']
+                #calificacion = data['calificacion']
+                #contacto = formPozo.instance
+                cliente = data['cliente'][0]
+                contacto = Pozo(nombre=nombre, ubicacion=ubicacion)
                 contacto.save()
-                
-                Pertenece(contacto=contacto, empresa=empresa, area=area).save()
+                print(cliente)
+                #Pertenece(contacto=contacto, empresa=empresa, area=area).save()
 
+                Pertenece(pozo=contacto, cliente=cliente).save()
                 current_user = request.user
                 current_vendedor = Vendedor.objects.get(user=current_user)
                 Atiende(vendedor=current_vendedor, contacto=contacto).save()

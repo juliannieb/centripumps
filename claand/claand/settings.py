@@ -94,6 +94,7 @@ USE_TZ = True
 
 GRAPPELLI_ADMIN_TITLE = "Claand"
 
+DEFAULT_CHARSET = 'utf-8'
 
 SETTINGS_DIR = os.path.dirname(__file__)
 

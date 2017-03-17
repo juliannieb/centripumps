@@ -30,7 +30,7 @@ class Pozo(models.Model):
         """
         if not self.id and not self.slug:
             slug = slugify(self.nombre)
-            slug += "-" + slugify(self.apellido)
+            slug += "-" + slugify(self.ubicacion)
             slug_exists = True
             counter = 1
             self.slug = slug
@@ -46,7 +46,7 @@ class Pozo(models.Model):
         super(Pozo, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.nombre + " " + self.apellido
+        return self.nombre + " " + self.ubicacion
 
 class Pertenece(models.Model):
     pozo = models.ForeignKey(Pozo)

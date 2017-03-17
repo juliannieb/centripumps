@@ -102,6 +102,7 @@ def consultar_ventas(request):
     if no_es_vendedor(current_user):
         ventas_list = Venta.objects.all()
     else:
+        print(Vendedor.objects.all())
         current_vendedor = Vendedor.objects.get(user=current_user)
         todos_los_contactos = Pozo.objects.all()
         contactos_list = obtener_contactos_list(current_vendedor)
